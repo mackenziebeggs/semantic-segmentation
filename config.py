@@ -49,7 +49,7 @@ cfg = __C
 __C.GLOBAL_RANK = 0
 __C.EPOCH = 0
 # Absolute path to a location to keep some large files, not in this dir.
-__C.ASSETS_PATH = '/home/dcg-adlr-atao-data.cosmos277/assets'
+__C.ASSETS_PATH = '/scratch/l/leil/rbeggs/data/semantic_segmentation'
 
 # Use class weighted loss per batch to increase loss for low pixel count classes per batch
 __C.BATCH_WEIGHTING = False
@@ -76,15 +76,15 @@ __C.TRAIN.FP16 = False
 __C.DATASET = AttrDict()
 #Cityscapes Dir Location
 __C.DATASET.CITYSCAPES_DIR = \
-  os.path.join(__C.ASSETS_PATH, 'data/Cityscapes')
+  os.path.join(__C.ASSETS_PATH, 'Cityscapes')
 __C.DATASET.CITYSCAPES_CUSTOMCOARSE = \
-  os.path.join(__C.ASSETS_PATH, 'data/Cityscapes/autolabelled')
+  os.path.join(__C.ASSETS_PATH, 'Cityscapes-auto')
 __C.DATASET.CENTROID_ROOT = \
   os.path.join(__C.ASSETS_PATH, 'uniform_centroids')
 #SDC Augmented Cityscapes Dir Location
 __C.DATASET.CITYSCAPES_AUG_DIR = ''
 #Mapillary Dataset Dir Location
-__C.DATASET.MAPILLARY_DIR = os.path.join(__C.ASSETS_PATH, 'data/Mapillary/data')
+__C.DATASET.MAPILLARY_DIR = os.path.join(__C.ASSETS_PATH, 'Mapillary/')
 #Kitti Dataset Dir Location
 __C.DATASET.KITTI_DIR = ''
 #SDC Augmented Kitti Dataset Dir Location
@@ -195,10 +195,10 @@ def torch_version_float():
     version_re = re.search(r'^([0-9]+\.[0-9]+)', version_str)
     if version_re:
         version = float(version_re.group(1))
-        logx.msg(f'Torch version: {version}, {version_str}')
+        print(f'Torch version: {version}, {version_str}')
     else:
         version = 1.0
-        logx.msg(f'Can\'t parse torch version ({version}), assuming {version}')
+        print(f'Can\'t parse torch version ({version}), assuming {version}')
     return version
 
 
@@ -254,9 +254,9 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
 
     if args.dump_assets and args.dataset == 'cityscapes':
         # A hacky way to force that when we dump cityscapes
-        logx.msg('*' * 70)
-        logx.msg(f'ALERT: forcing cv=3 to allow all images to be evaluated')
-        logx.msg('*' * 70)
+        print('*' * 70)
+        print(f'ALERT: forcing cv=3 to allow all images to be evaluated')
+        print('*' * 70)
         cfg.DATASET.CV = 3
     else:
         cfg.DATASET.CV = args.cv
@@ -284,7 +284,7 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
 
     if args.n_scales:
         cfg.MODEL.N_SCALES = str2list(args.n_scales)
-        logx.msg('n scales {}'.format(cfg.MODEL.N_SCALES))
+        print('n scales {}'.format(cfg.MODEL.N_SCALES))
 
     if args.extra_scales:
         cfg.MODEL.EXTRA_SCALES = str2list(args.extra_scales)
@@ -372,7 +372,7 @@ def update_dataset_cfg(num_classes, ignore_label):
     cfg.immutable(False)
     cfg.DATASET.NUM_CLASSES = num_classes
     cfg.DATASET.IGNORE_LABEL = ignore_label
-    logx.msg('num_classes = {}'.format(num_classes))
+    print('num_classes = {}'.format(num_classes))
     cfg.immutable(True)
 
 

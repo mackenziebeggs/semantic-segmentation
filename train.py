@@ -373,7 +373,6 @@ def main():
         args.restore_net = True
         msg = "Loading weights from: checkpoint={}".format(args.snapshot)
         logx.msg(msg)
-
     net = network.get_net(args, criterion)
     optim, scheduler = get_optimizer(args, net)
 
@@ -558,8 +557,9 @@ def validate(val_loader, net, criterion, optim, epoch,
     net.eval()
     val_loss = AverageMeter()
     iou_acc = 0
-
+    total_time_start = time.time()
     for val_idx, data in enumerate(val_loader):
+        start = time.time()
         input_images, labels, img_names, _ = data 
         if args.dump_for_auto_labelling or args.dump_for_submission:
             submit_fn = '{}.png'.format(img_names[0])
@@ -587,7 +587,7 @@ def validate(val_loader, net, criterion, optim, epoch,
 
         if val_idx % 20 == 0:
             logx.msg(f'validating[Iter: {val_idx + 1} / {len(val_loader)}]')
-
+        print(f"Done 1 in: {time.time() -start}")
     was_best = False
     if calc_metrics:
         was_best = eval_metrics(iou_acc, args, net, optim, val_loss, epoch)
@@ -596,6 +596,7 @@ def validate(val_loader, net, criterion, optim, epoch,
     if not args.dump_for_auto_labelling and not args.dump_for_submission:
         dumper.write_summaries(was_best)
 
-
+    print(time.time() - total_time_start)
+    
 if __name__ == '__main__':
     main()

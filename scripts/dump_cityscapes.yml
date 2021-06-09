@@ -1,6 +1,6 @@
 # Run Evaluation and Dump Images on Cityscapes with a pretrained model
 
-CMD: "python -m torch.distributed.launch --nproc_per_node=1 train.py"
+CMD: "python -m torch.distributed.launch --nproc_per_node=1 /scratch/l/leil/rbeggs/semantic-segmentation/train.py"
 
 HPARAMS: [
   {
@@ -14,7 +14,7 @@ HPARAMS: [
    dump_assets: true,
    dump_all_images: true,
    n_scales: "0.5,1.0,2.0",
-   snapshot: "ASSETS_PATH/seg_weights/cityscapes_ocrnet.HRNet_Mscale_outstanding-turtle.pth",
+   snapshot: "/scratch/l/leil/rbeggs/data/semantic_segmentation/seg_weights/cityscapes_sota.pth",
    arch: ocrnet.HRNet_Mscale,
    result_dir: LOGDIR,
   },
