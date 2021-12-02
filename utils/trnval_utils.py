@@ -127,10 +127,10 @@ def eval_minibatch(data, net, criterion, val_loss, calc_metrics, args, val_idx):
 
                 if scale != 1.0:
                     inputs = resize_tensor(inputs, infer_size)
-
+                print(inputs.shape)
                 inputs = {'images': inputs, 'gts': gt_image}
                 inputs = {k: v.cuda() for k, v in inputs.items()}
-
+                
                 # Expected Model outputs:
                 #   required:
                 #     'pred'  the network prediction, shape (1, 19, h, w)
@@ -138,25 +138,30 @@ def eval_minibatch(data, net, criterion, val_loss, calc_metrics, args, val_idx):
                 #   optional:
                 #     'pred_*' - multi-scale predictions from mscale model
                 #     'attn_*' - multi-scale attentions from mscale model
+                
+                #The model output is (1, num_classes, h, w)
+                #For Mapillary this is (1, 65, h, w)
                 output_dict = net(inputs)
-
                 _pred = output_dict['pred']
-
+                print(_pred.shape)
                 # save AVGPOOL style multi-scale output for visualizing
                 if not cfg.MODEL.MSCALE:
+                    print('here 1')
                     scale_name = fmt_scale('pred', scale)
                     output_dict[scale_name] = _pred
 
                 # resize tensor down to 1.0x scale in order to combine
                 # with other scales of prediction
                 if scale != 1.0:
+                    print('here 2')
                     _pred = resize_tensor(_pred, input_size)
 
                 if flip == 1:
+                    print('here 3')
                     output = output + flip_tensor(_pred, 3)
                 else:
+                    print('here 4')
                     output = output + _pred
-
     output = output / len(scales) / len(flips)
     assert_msg = 'output_size {} gt_cuda size {}'
     gt_cuda = gt_image.cuda()
@@ -184,18 +189,19 @@ def eval_minibatch(data, net, criterion, val_loss, calc_metrics, args, val_idx):
             assets[item] = pred.cpu().numpy()
 
     predictions = predictions.numpy()
+    print(predictions.shape)
     assets['predictions'] = predictions
     assets['prob_mask'] = max_probs
     if calc_metrics:
         assets['err_mask'] = calc_err_mask_all(predictions,
                                                gt_image.numpy(),
                                                cfg.DATASET.NUM_CLASSES)
-
+    
     _iou_acc = fast_hist(predictions.flatten(),
                          gt_image.numpy().flatten(),
                          cfg.DATASET.NUM_CLASSES)
 
-    return assets, _iou_acc
+    return assets, _iou_acc, predictions
 
 
 def validate_topn(val_loader, net, criterion, optim, epoch, args):
@@ -221,7 +227,6 @@ def validate_topn(val_loader, net, criterion, optim, epoch, args):
     iou_acc = 0
 
     for val_idx, data in enumerate(val_loader):
-
         # Run network
         assets, _iou_acc = \
             run_minibatch(data, net, criterion, val_loss, True, args, val_idx)

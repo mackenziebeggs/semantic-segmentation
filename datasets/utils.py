@@ -1,5 +1,5 @@
 import os
-
+import pandas as pd
 
 def make_dataset_folder(folder):
     """
@@ -11,9 +11,21 @@ def make_dataset_folder(folder):
     items = os.listdir(folder)
     items = [(os.path.join(folder, f), '') for f in items]
     items = sorted(items)
+   
+    pth = "/gpfs/fs0/scratch/l/leil/rbeggs/data/aecon/RGB_2_LiDAR_TESTING/Markham_3A_00000_ImageListLocation.csv"
+    x = pd.read_csv(pth)
+    fnames = x['ImageName']
 
+    items_lst = []
+    for x in items:
+        fname = x[0].split("/")[-1]
+        if fname in set(fnames):
+            items_lst.append((x[0], ''))
+    
+    del items
+    items = items_lst#[100:]
     print(f'Found {len(items)} folder imgs')
-
+    
     """
     orig_len = len(items)
     rem = orig_len % 8

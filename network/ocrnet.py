@@ -46,7 +46,6 @@ class OCR_block(nn.Module):
     """
     def __init__(self, high_level_ch):
         super(OCR_block, self).__init__()
-
         ocr_mid_channels = cfg.MODEL.OCR.MID_CHANNELS
         ocr_key_channels = cfg.MODEL.OCR.KEY_CHANNELS
         num_classes = cfg.DATASET.NUM_CLASSES
@@ -318,12 +317,17 @@ class MscaleOCR(nn.Module):
                 loss += cfg.LOSS.SUPERVISED_MSCALE_WT * loss_hi
             return loss
         else:
-            output_dict = {
-                'pred': joint_pred,
-                'pred_05x': pred_05x,
-                'pred_10x': pred_10x,
-                'attn_05x': attn_05x,
-            }
+            if cfg.MODEL.return_only_preds:
+                output_dict = joint_pred
+            
+            else:
+                output_dict = {
+                    'pred': joint_pred,
+                    'pred_05x': pred_05x,
+                    'pred_10x': pred_10x,
+                    'attn_05x': attn_05x,
+                }
+            
             return output_dict
 
     def forward(self, inputs):

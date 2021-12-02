@@ -5,7 +5,7 @@ Network Initializations
 import importlib
 import torch
 
-from runx.logx import logx
+#from runx.logx import logx
 from config import cfg
 
 
@@ -17,7 +17,7 @@ def get_net(args, criterion):
                     num_classes=cfg.DATASET.NUM_CLASSES,
                     criterion=criterion)
     num_params = sum([param.nelement() for param in net.parameters()])
-    logx.msg('Model params = {:2.1f}M'.format(num_params / 1000000))
+    #logx.msg('Model params = {:2.1f}M'.format(num_params / 1000000))
 
     net = net.cuda()
     return net

@@ -124,7 +124,6 @@ class BaseLoader(data.Dataset):
         :returns: image, mask
         """
         scale_float = 1.0
-
         if self.joint_transform_list is not None:
             for idx, xform in enumerate(self.joint_transform_list):
                 if idx == 0 and centroid is not None:
@@ -206,7 +205,6 @@ class BaseLoader(data.Dataset):
         mask_out = cfg.DATASET.MASK_OUT_CITYSCAPES and \
             cfg.DATASET.CUSTOM_COARSE_PROB is not None and \
             'refinement' in mask_path
-
         img, mask, img_name = self.read_images(img_path, mask_path,
                                                mask_out=mask_out)
 

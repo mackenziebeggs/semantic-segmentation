@@ -75,7 +75,7 @@ class Loader(BaseLoader):
             mask_root = os.path.join(root, split_name, 'labels')
             self.all_imgs = self.find_images(img_root, mask_root, img_ext,
                                              mask_ext)
-        logx.msg('all imgs {}'.format(len(self.all_imgs)))
+        print('all imgs {}'.format(len(self.all_imgs)))
         self.centroids = uniform.build_centroids(self.all_imgs,
                                                  self.num_classes,
                                                  self.train,
@@ -94,7 +94,6 @@ class Loader(BaseLoader):
         with open(config_fn) as config_file:
             config = json.load(config_file)
         config_labels = config['labels']
-
         # calculate label color mapping
         colormap = []
         self.trainid_to_name = {}

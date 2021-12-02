@@ -352,6 +352,10 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
         cfg.DROPOUT_COARSE_BOOST_CLASSES = \
             [int(i) for i in args.custom_coarse_dropout_classes.split(',')]
 
+    __C.MODEL.return_only_preds = None
+    if args.return_only_preds:
+        __C.MODEL.return_only_preds = True
+
     if args.grad_ckpt:
         __C.MODEL.GRAD_CKPT = True
 
@@ -359,6 +363,7 @@ def assert_and_infer_cfg(args, make_immutable=True, train_mode=True):
 
     if make_immutable:
         cfg.immutable(True)
+
 
 
 def update_epoch(epoch):

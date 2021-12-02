@@ -268,7 +268,8 @@ parser.add_argument('--supervised_mscale_loss_wt', type=float, default=None,
                     help='weighting for the supervised loss')
 parser.add_argument('--ocr_aux_loss_rmi', action='store_true', default=False,
                     help='allow rmi for aux loss')
-
+parser.add_argument('--return_only_preds', action='store_true', default=False,
+                    help='return only predictions from ocrnet')
 
 args = parser.parse_args()
 args.best_record = {'epoch': -1, 'iter': 0, 'val_loss': 1e10, 'acc': 0,
@@ -399,7 +400,6 @@ def main():
         net.module.init_mods()
 
     torch.cuda.empty_cache()
-
     if args.start_epoch != 0:
         scheduler.step(args.start_epoch)
 
@@ -569,14 +569,19 @@ def validate(val_loader, net, criterion, optim, epoch,
                 continue
 
         # Run network
-        assets, _iou_acc = \
+        assets, _iou_acc, to_save = \
             eval_minibatch(data, net, criterion, val_loss, calc_metrics,
                           args, val_idx)
 
         iou_acc += _iou_acc
 
         input_images, labels, img_names, _ = data
-
+        
+        #sv_pth = os.path.join(cfg.RESULT_DIR, img_names[0] + ".pt")
+        #torch.save(to_save, sv_pth)
+        #del to_save
+        #torch.cuda.empty_cache()
+        #TODO: don't leave this commented out
         dumper.dump({'gt_images': labels,
                      'input_images': input_images,
                      'img_names': img_names,

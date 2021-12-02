@@ -471,7 +471,7 @@ class MscaleBasic(MscaleBase):
         return pred, attn, None, None
 
 
-def HRNet(num_classes, criterion, s2s4=None):
+def HRNet(num_classes, criterion=None, s2s4=None):
     return MscaleBasic(num_classes=num_classes, criterion=criterion,
                        trunk='hrnetv2')
 
@@ -511,5 +511,5 @@ class ASPP(MscaleBase):
         return out, logit_attn, aspp_attn, aspp
 
 
-def HRNet_ASP(num_classes, criterion, s2s4=None):
+def HRNet_ASP(num_classes, criterion=None, s2s4=None):
     return ASPP(num_classes=num_classes, criterion=criterion, trunk='hrnetv2')

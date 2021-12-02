@@ -148,7 +148,7 @@ def forgiving_state_restore(net, loaded_dict):
         if new_k in loaded_dict and net_state_dict[k].size() == loaded_dict[new_k].size():
             new_loaded_dict[k] = loaded_dict[new_k]
         else:            
-            logx.msg("Skipped loading parameter {}".format(k))
+            print("Skipped loading parameter {}".format(k))
     net_state_dict.update(new_loaded_dict)
     net.load_state_dict(net_state_dict)
     return net
